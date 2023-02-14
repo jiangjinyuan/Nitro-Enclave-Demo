@@ -5,7 +5,7 @@ echo "Starting run.sh"
 ifconfig lo 127.0.0.1
 
 # Add a hosts record, pointing API endpoint to local loopback
-echo "127.0.0.1   kms.ap-northeast-1.amazonaws.com" >> /etc/hosts
+echo "127.0.0.1   kms.ap-east-1.amazonaws.com" >> /etc/hosts
 
 rngd -r /dev/urandom
 

@@ -67,7 +67,7 @@ def main():
     print(response)
 
     # Write to DynamoDB
-    ddb = boto3.resource('dynamodb', region_name='ap-northeast-1')
+    ddb = boto3.resource('dynamodb', region_name='ap-east-1')
     table = ddb.Table('UserToken')
     try:
         table.put_item(Item=json.loads(response))
