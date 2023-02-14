@@ -83,7 +83,7 @@ def main():
         print('Message Received:  '+ message)
 
         # Set environment variables
-        nitro_kms.set_region('ap-northeast-1')
+        nitro_kms.set_region('ap-east-1')
         nitro_kms.set_credentials(kms_credentials)
         
         # Decrypt encrypted data_key by KMS Decrypt API with attestation

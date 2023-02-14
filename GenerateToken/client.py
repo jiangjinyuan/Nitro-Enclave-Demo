@@ -5,6 +5,7 @@ import json
 import base64
 import subprocess
 import boto3
+import pymysql
 
 """
 How to use this?
@@ -12,6 +13,7 @@ python3 client.py <KMS Key-id> <UserID>
 e.g.:
 python3 client.py alias/encalve u001
 """
+
 
 def get_aws_session_token():
     """
@@ -24,12 +26,13 @@ def get_aws_session_token():
     response = r.json()
 
     credential = {
-        'aws_access_key_id' : response['AccessKeyId'],
-        'aws_secret_access_key' : response['SecretAccessKey'],
-        'aws_session_token' : response['Token']
+        'aws_access_key_id': response['AccessKeyId'],
+        'aws_secret_access_key': response['SecretAccessKey'],
+        'aws_session_token': response['Token']
     }
 
     return credential
+
 
 def main():
     # Get EC2 instance metedata
@@ -63,21 +66,46 @@ def main():
     # receive data from the server
     response = s.recv(65536).decode()
 
-    #plaintext = base64.b64decode(response['Plaintext']).decode()
+    # plaintext = base64.b64decode(response['Plaintext']).decode()
     print(response)
 
     # Write to DynamoDB
-    ddb = boto3.resource('dynamodb', region_name='ap-east-1')
-    table = ddb.Table('UserToken')
+    # ddb = boto3.resource('dynamodb', region_name='ap-east-1')
+    # table = ddb.Table('UserToken')
+    # try:
+    #     table.put_item(Item=json.loads(response))
+    #     print('Write User Token to DynamoDB Successfully')
+    # except Exception as error:
+    #     print(error)
+    #     return
+
+    # Write to Mysql
+    db = pymysql.connect(host='***',
+                         user='***',
+                         password='***',
+                         database='TESTDB')
+
+    # 使用 cursor() 方法创建一个游标对象 cursor
+    cursor = db.cursor()
+    item = json.loads(response)
+    sql = "INSERT INTO `user_token`(`uid`, `encrypted_privatekey`, `encrypted_datakey`, `publicKey`) \
+           VALUES ('%s', '%s', '%s', '%s')" % \
+          (item["userid"], item["encrypted_privatekey"], item["encrypted_datakey"], item["publickey"])
     try:
-        table.put_item(Item=json.loads(response))
-        print('Write User Token to DynamoDB Successfully')
+        # 执行sql语句
+        cursor.execute(sql)
+        # 提交到数据库执行
+        db.commit()
+        print('Write User Token to Mysql Successfully')
     except Exception as error:
-        print(error)
-        return
+        # 如果发生错误则回滚
+        db.rollback()
+    # 关闭数据库连接
+    db.close()
 
     # close the connection
     s.close()
+
 
 if __name__ == '__main__':
     main()

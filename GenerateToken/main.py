@@ -70,7 +70,7 @@ def main():
         user_id = client_request['userid']
 
         # Set environment variables
-        nitro_kms.set_region('ap-northeast-1')
+        nitro_kms.set_region('ap-east-1')
         nitro_kms.set_credentials(kms_credentials)
         
         # Generate Random as User private Key from KMS(256 bits)

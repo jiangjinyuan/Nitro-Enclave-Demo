@@ -57,7 +57,7 @@ def main():
     port = 5000
 
     # Get item from DynamoDB
-    ddb = boto3.resource('dynamodb', region_name='ap-northeast-1')
+    ddb = boto3.resource('dynamodb', region_name='ap-east-1')
     table = ddb.Table('UserToken')
     try:
         Item = table.get_item(Key={'userid': userid})

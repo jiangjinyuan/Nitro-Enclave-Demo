@@ -64,7 +64,7 @@ def main():
         # Get AWS KMS Key ID from Socket
         key_id = client_request['keyid']
         # Set environment variables
-        nitro_kms.set_region('ap-northeast-1')
+        nitro_kms.set_region('ap-east-1')
         nitro_kms.set_credentials(kms_credentials)
         
         # Generate text by KMS GenerateRandom API with attestation
